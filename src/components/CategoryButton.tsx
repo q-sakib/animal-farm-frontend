@@ -1,7 +1,7 @@
-'use client';
 
 import * as React from 'react';
 import { CategoryProps } from '@/types';
+// 'use client';
 export const CategoryButton: React.FC<CategoryProps> = ({
   name,
   isActive = false,

@@ -1,5 +1,5 @@
 'use client';
-
+import { ImageUpload } from './ImageProperty';
 import React, { useState } from 'react';
 
 type FormComponentProps = {
@@ -11,7 +11,6 @@ type FormComponentProps = {
 export const FormComponent: React.FC<FormComponentProps> = ({ type, onClose, onSubmit }) => {
   const [name, setName] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -54,23 +53,14 @@ export const FormComponent: React.FC<FormComponentProps> = ({ type, onClose, onS
       await onSubmit(name, image || undefined);
       setSuccessMessage(`${type === 'animal' ? 'Animal' : 'Category'} added successfully!`);
       onClose();
-    } catch (error: any) {
-      setErrorMessage(error.message || 'An error occurred.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message || 'An error occurred.');
+      } else {
+        setErrorMessage('An error occurred.');
+      }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setImageError('Image size must be less than 5MB.');
-        return;
-      }
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-      setImageError(null);
     }
   };
 
@@ -102,28 +92,13 @@ export const FormComponent: React.FC<FormComponentProps> = ({ type, onClose, onS
             {nameError && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
           </div>
 
-          {/* Upload Button Embedded in Input Field for Animal */}
+          {/* Image Upload for Animal */}
           {type === 'animal' && (
-            <div className="relative w-full">
-              <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700">
-                Upload Image
-              </label>
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer focus:outline-none file:bg-gray-100 file:text-gray-700 file:mr-4 file:px-3 file:py-1 file:rounded-md file:cursor-pointer hover:file:bg-gray-200"
-              />
-              {imageError && <p className="text-red-500 text-sm mt-1">{imageError}</p>}
-              {preview && (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="w-40 h-48 object-cover rounded-md border mt-3 mx-auto"
-                />
-              )}
-            </div>
+            <ImageUpload
+              onImageSelect={setImage}
+              errorMessage={imageError}
+              setErrorMessage={setImageError}
+            />
           )}
 
           {/* Submit Button */}

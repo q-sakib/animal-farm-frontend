@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../section/sect/anm.jsx", "src/components/nf.jsx, "../section/sect/btn.tsx", "../section/sect/anmP.tsx"", "../section/sect/InputHelper.tsx", "../section/sect/input.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
